@@ -1,10 +1,10 @@
 /* eslint-env node */
 /* eslint-disable no-console */
 
-const express = require('express');
-const http = require('http');
-const { Server } = require('socket.io');
-const cors = require('cors');
+import express from 'express';
+import http from 'http';
+import { Server } from 'socket.io';
+import cors from 'cors';
 
 const app = express();
 app.use(cors());

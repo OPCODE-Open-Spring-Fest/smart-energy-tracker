@@ -1,23 +1,15 @@
 {
-  "devDependencies": {
-    "@commitlint/cli": "^19.1.0",
-    "@commitlint/config-conventional": "^19.1.0",
-    "husky": "^9.0.11"
-  },
-  "scripts": {
-    "prepare": "husky",
-    "commitlint": "commitlint --edit"
-  },
-  "type": "module",
   "name": "smart-energy-tracker",
-  "private": true,
   "version": "0.0.0",
+  "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prepare": "husky",
+    "commitlint": "commitlint --edit"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.14",
@@ -39,6 +31,9 @@
     "tailwindcss": "^4.1.14"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.1.0",
+    "@commitlint/config-conventional": "^19.1.0",
+    "husky": "^9.0.11",
     "@eslint/js": "^9.36.0",
     "@types/react": "^19.1.16",
     "@types/react-dom": "^19.1.9",
