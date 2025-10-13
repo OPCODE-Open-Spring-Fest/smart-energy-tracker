@@ -17,7 +17,7 @@ export function SocketProvider({ children }) {
       transports: ['websocket'],
     });
 
-    newSocket.on('connection', () => {
+    newSocket.on('connect', () => {
       setIsConnected(true);
       addNotification({
         type: 'success',
@@ -65,7 +65,7 @@ export function SocketProvider({ children }) {
     setSocket(newSocket);
 
     return () => newSocket.close();
-  }, [dispatch, addNotification]);
+  }, [dispatch]);
 
   const value = {
     socket,

@@ -37,7 +37,12 @@ const StatusCard = ({ title, value, subtitle, icon, color, onClick }) => {
   if (title === 'Battery Level') {
     value = `${state.batteryLevel}%`;
     subtitle = state.batteryLevel > 20 ? 'Adequate charge' : 'Low battery';
-    color = state.batteryLevel > 20 ? 'status-online' : 'status-offline';
+    color =
+      state.batteryLevel > 50
+        ? 'status-online'
+        : state.batteryLevel > 20
+        ? 'status-standby'
+        : 'status-offline';
   }
 
   return (
@@ -50,12 +55,30 @@ const StatusCard = ({ title, value, subtitle, icon, color, onClick }) => {
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm opacity-90">{title}</p>
-          <h3 className="text-2xl font-bold mt-2">{value}</h3>
+          {title === 'Battery Level' ? (
+            <div className="mt-2 w-32 h-6 border-2 border-white rounded-md overflow-hidden bg-gray-800 relative">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${state.batteryLevel}%` }}
+                transition={{ duration: 1 }}
+                className={`h-full ${
+                  state.batteryLevel > 50
+                    ? 'bg-green-500'
+                    : state.batteryLevel > 20
+                    ? 'bg-yellow-400'
+                    : 'bg-red-500'
+                }`}
+              />
+              <span className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-sm font-bold">
+                {state.batteryLevel}%
+              </span>
+            </div>
+          ) : (
+            <h3 className="text-2xl font-bold mt-2">{value}</h3>
+          )}
           <p className="text-sm opacity-80 mt-1">{subtitle}</p>
         </div>
-        <div className="text-3xl">
-          {icon}
-        </div>
+        <div className="text-3xl">{icon}</div>
       </div>
     </motion.div>
   );
