@@ -4,11 +4,19 @@
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
+  /* Light theme variables */
+  --bg: #f8fafc;
+  --card-bg: #ffffff;
+  --muted: #6b7280;
+  --text: #0f172a;
+  --muted-2: #4b5563;
+  --border: #e5e7eb;
+  --muted-strong: #374151;
 }
 
 body {
   margin: 0;
-  background: #f8fafc;
+  background: var(--bg);
   min-height: 100vh;
 }
 
@@ -31,10 +39,277 @@ body {
 }
 
 .chart-container {
-  background: white;
+  background: var(--card-bg);
   border-radius: 12px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
+
+/* Status card tweaks in dark mode to improve contrast for gradient cards */
+.dark .status-card {
+  /* apply a subtle overlay so light gradients remain visible but text stays legible */
+  position: relative;
+}
+.dark .status-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(2,6,23,0.35);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.dark .status-card > * { position: relative; z-index: 1; }
+
+/* Stat card dark-mode: keep card tint but force readable white text per color */
+.dark .stat-card.bg-blue-50 {
+  background: rgba(59,130,246,0.08) !important; /* subtle blue tint */
+}
+.dark .stat-card.bg-blue-50 .text-blue-600,
+.dark .stat-card.bg-blue-50 .text-blue-800,
+.dark .stat-card.bg-blue-50 p,
+.dark .stat-card.bg-blue-50 h3 {
+  color: #ffffff !important;
+}
+
+.dark .stat-card.bg-green-50 {
+  background: rgba(16,185,129,0.10) !important; /* subtle green tint */
+}
+.dark .stat-card.bg-green-50 .text-green-600,
+.dark .stat-card.bg-green-50 .text-green-800,
+.dark .stat-card.bg-green-50 p,
+.dark .stat-card.bg-green-50 h3 {
+  color: #ffffff !important;
+}
+
+.dark .stat-card.bg-orange-50 {
+  background: rgba(249,115,22,0.10) !important; /* subtle orange tint */
+}
+.dark .stat-card.bg-orange-50 .text-orange-600,
+.dark .stat-card.bg-orange-50 .text-orange-800,
+.dark .stat-card.bg-orange-50 p,
+.dark .stat-card.bg-orange-50 h3 {
+  color: #ffffff !important;
+}
+
+/* Dark theme overrides when the html element has class 'dark' */
+.dark {
+  --bg: #071022;        /* page background */
+  --card-bg: #0f1724;   /* card / panel background */
+  --muted: #9aa6b2;     /* secondary text */
+  --text: #ffffff;      /* primary text - make white for max contrast */
+  --muted-2: #a9b6c2;   /* slightly brighter muted */
+  --border: rgba(255,255,255,0.07);
+  --muted-strong: #cbd7e3;
+}
+
+/* Apply background and default text color */
+.dark body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Improve contrast for common Tailwind utility classes used across the app */
+.dark .text-gray-900,
+.dark .text-gray-800,
+.dark .text-gray-700,
+.dark .text-gray-600,
+.dark .text-gray-500,
+.dark .text-gray-400,
+.dark .text-white,
+.dark body,
+.dark p,
+.dark h1,
+.dark h2,
+.dark h3,
+.dark h4,
+.dark h5,
+.dark h6,
+.dark label,
+.dark a,
+.dark span,
+.dark div {
+  color: var(--text) !important;
+}
+
+.dark .bg-white { background: var(--card-bg) !important; }
+.dark .bg-gray-50 { background: var(--bg) !important; }
+.dark .bg-gray-100 { background: #0b1624 !important; }
+.dark .bg-gray-200 { background: #111826 !important; }
+
+.dark .border-gray-300 { border-color: var(--border) !important; }
+.dark .border-gray-200 { border-color: rgba(255,255,255,0.03) !important; }
+
+/* Shadows */
+.dark .shadow-lg { box-shadow: 0 8px 24px rgba(2,6,23,0.6) !important; }
+
+/* Buttons / small labels */
+/* .dark .font-medium { color: var(--text) !important; } */
+/* .dark .text-sm { color: var(--muted-2) !important; } */
+
+/* Specific tweaks for known components */
+.dark .Navigation, .dark .sidebar, .dark .nav {
+  background: #071022;
+}
+
+/* Navigation active/selected overrides: avoid bright white pill in dark mode */
+.dark .bg-blue-50 { background: rgba(37,99,235,0.10) !important; }
+.dark .text-blue-700 { color: #dbeafe !important; }
+.dark .border-blue-700 { border-color: rgba(37,99,235,0.55) !important; }
+
+/* Ensure non-active nav links aren't too bright */
+.dark .text-gray-700 { color: var(--muted-2) !important; }
+.dark .hover\:bg-gray-50:hover { background: rgba(255,255,255,0.02) !important; }
+
+/* Ensure very small / muted text remains legible */
+.dark .text-xs, .dark small { color: var(--muted) !important; }
+
+/* Logs/table specific dark-mode fixes */
+/* Ensure table headers and cells are readable */
+.dark .logs-table th,
+.dark .logs-table td,
+.dark table th,
+.dark table td,
+.dark .log-row,
+.dark .table-row {
+  color: var(--text) !important;
+  background: transparent !important;
+}
+
+/* Hover states: subtle light overlay instead of full white */
+.dark .logs-table tr:hover,
+.dark .log-row:hover,
+.dark .table-row:hover,
+.dark .bg-white:hover {
+  background: rgba(255,255,255,0.04) !important;
+}
+
+/* Override common Tailwind hover utilities (they compile to classes with colons) */
+.dark .hover\:bg-white:hover,
+.dark .hover\:bg-gray-50:hover,
+.dark .hover\:bg-gray-100:hover,
+.dark .hover\:bg-gray-200:hover {
+  background: rgba(255,255,255,0.04) !important;
+}
+
+/* If components use hover utilities combined with other states (e.g. hover:bg-gray-50 on tr), ensure selectors with multiple classes are handled by a general rule */
+.dark [class*="hover:bg-"]:hover {
+  background: rgba(255,255,255,0.04) !important;
+}
+
+/* Selected / highlighted rows: slightly stronger, but still dark */
+.dark .logs-table tr.selected,
+.dark .logs-table tr.active,
+.dark .log-row.selected,
+.dark .table-row.selected,
+.dark .bg-white.selected {
+  background: rgba(255,255,255,0.06) !important;
+  color: var(--text) !important;
+}
+
+/* If there are components that programmatically add white backgrounds on rows, override them when in dark */
+.dark .logs-list .bg-white,
+.dark .logs-list .bg-gray-50,
+.dark .list-item.bg-white {
+  background: transparent !important;
+}
+
+/* Search input / filters visibility */
+.dark .search-input,
+.dark .input,
+.dark .form-control,
+.dark input[type="search"],
+.dark input,
+.dark select {
+  background: #0b1622 !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+}
+
+/* Badge/pill colors in logs */
+.dark .badge,
+.dark .pill,
+.dark .tag {
+  color: var(--text) !important;
+  background: rgba(255,255,255,0.03) !important;
+  border: 1px solid rgba(255,255,255,0.03) !important;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+}
+
+.badge .mr-2 { margin-right: 0.5rem; }
+
+.dark .badge.info {
+  background: rgba(59,130,246,0.22) !important; /* stronger blue tint */
+  color: #bfdbfe !important; /* lighter blue text */
+  border-color: rgba(59,130,246,0.28) !important;
+}
+.dark .badge.success {
+  background: rgba(16,185,129,0.18) !important; /* stronger green tint */
+  color: #bbf7d0 !important;
+  border-color: rgba(16,185,129,0.26) !important;
+}
+.dark .badge.warning {
+  background: rgba(249,115,22,0.18) !important; /* stronger orange tint */
+  color: #ffd8b5 !important;
+  border-color: rgba(249,115,22,0.26) !important;
+}
+.dark .badge.success,
+.dark .badge.warning,
+.dark .badge.error {
+  background: rgba(59,130,246,0.22) !important; /* match info blue tint */
+  color: #bfdbfe !important; /* match info light blue text */
+  border-color: rgba(59,130,246,0.28) !important;
+}
+
+/* Also ensure the bg-white on tbody or parent elements used by Tailwind utilities are overridden */
+.dark tbody.bg-white,
+.dark thead.bg-gray-50,
+.dark thead.bg-white,
+.dark .bg-white {
+  background: var(--card-bg) !important;
+}
+
+/* Toggle switch improvements in dark mode
+   Targets structure: <label> <input type="checkbox" class="sr-only peer"/> <div class="w-11 h-6 ..."> </div>
+*/
+.dark label input[type="checkbox"].sr-only + div,
+.dark label input[type="checkbox"] + div {
+  background-color: rgba(255,255,255,0.06) !important; /* off track */
+  border-radius: 9999px;
+  position: relative;
+}
+
+.dark label input[type="checkbox"].sr-only + div::after,
+.dark label input[type="checkbox"] + div::after {
+  background: #ffffff !important; /* knob */
+  border-color: rgba(255,255,255,0.12) !important;
+}
+
+/* checked/on state: make the track a saturated blue for visibility */
+.dark label input[type="checkbox"].sr-only:checked + div,
+.dark label input[type="checkbox"]:checked + div {
+  background-color: #2563eb !important; /* blue-600 */
+}
+
+/* ensure knob remains white and visible when checked */
+.dark label input[type="checkbox"].sr-only:checked + div::after,
+.dark label input[type="checkbox"]:checked + div::after {
+  background: #ffffff !important;
+  border-color: #ffffff !important;
+}
+
+/* slightly increase contrast for the small switch container */
+.dark .w-11.h-6 { box-shadow: none !important; }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {

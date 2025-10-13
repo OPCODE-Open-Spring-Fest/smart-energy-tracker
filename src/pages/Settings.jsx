@@ -1,18 +1,27 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import ScheduleManager from '../components/ScheduleManager';
+import { useApp } from '../context/AppContext';
 
 const Settings = () => {
-  const [settings, setSettings] = useState({
+  const { state, dispatch } = useApp();
+
+  const [settings, setSettings] = useState(() => ({
     notifications: true,
     soundAlerts: false,
     autoBackup: true,
     dataRetention: '30days',
-    theme: 'light',
+    theme: state.theme || 'light',
     language: 'en'
-  });
+  }));
 
   const handleSettingChange = (key, value) => {
+    if (key === 'theme') {
+      dispatch({ type: 'SET_THEME', payload: value });
+      setSettings(prev => ({ ...prev, theme: value }));
+      return;
+    }
+
     setSettings(prev => ({
       ...prev,
       [key]: value
@@ -20,7 +29,7 @@ const Settings = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+  <div className="min-h-screen bg-gray-50 p-4">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -123,7 +132,7 @@ const Settings = () => {
                   Theme
                 </label>
                 <select
-                  value={settings.theme}
+                  value={state.theme || 'light'}
                   onChange={(e) => handleSettingChange('theme', e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >

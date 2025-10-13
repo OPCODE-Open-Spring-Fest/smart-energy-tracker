@@ -44,7 +44,7 @@ const StatusCard = ({ title, value, subtitle, icon, color, onClick }) => {
     <motion.div
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
-      className={`rounded-xl p-6 text-white shadow-lg cursor-pointer transition-all duration-300 ${color}`}
+      className={`rounded-xl p-6 text-white shadow-lg cursor-pointer transition-all duration-300 ${color} status-card`}
       onClick={onClick}
     >
       <div className="flex items-center justify-between">
