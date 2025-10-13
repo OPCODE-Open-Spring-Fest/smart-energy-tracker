@@ -17,7 +17,7 @@ export function SocketProvider({ children }) {
       transports: ['websocket'],
     });
 
-    newSocket.on('connect', () => {
+    newSocket.on('connection', () => {
       setIsConnected(true);
       addNotification({
         type: 'success',
