@@ -1,12 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../context/AppContext';
 
 const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(typeof window !== 'undefined' ? window.innerWidth >= 1024 : false);
   const location = useLocation();
   const { state } = useApp();
+
+  useEffect(() => {
+    const handleResize = () => {
+      const desktopNow = window.innerWidth >= 1024;
+      setIsDesktop(desktopNow);
+      if (desktopNow) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    // Initialize on mount in case of SSR/hydration differences
+    handleResize();
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const navigationItems = [
     { path: '/dashboard', label: 'Dashboard', icon: '📊' },
@@ -58,7 +74,7 @@ const Navigation = () => {
 
       {/* Sidebar */}
       <AnimatePresence>
-        {(isMobileMenuOpen || window.innerWidth >= 1024) && (
+        {(isMobileMenuOpen || isDesktop) && (
           <motion.nav
             initial={{ x: -320 }}
             animate={{ x: 0 }}
