@@ -23,7 +23,6 @@ const StatusCard = ({ title, value, subtitle, icon, color, onClick }) => {
     }
   };
 
-  // Enhanced warning detection
   const getWarningLevel = () => {
     if (title === 'Battery Level' && state.batteryLevel <= 20) {
       return 'critical';
@@ -39,7 +38,6 @@ const StatusCard = ({ title, value, subtitle, icon, color, onClick }) => {
 
   const warningLevel = getWarningLevel();
 
-  // Dynamic color assignment based on warning level
   if (title === 'Inverter Status') {
     value = `${getStatusIcon()} ${state.inverterStatus.toUpperCase()}`;
     color = getStatusColor();
@@ -65,14 +63,12 @@ const StatusCard = ({ title, value, subtitle, icon, color, onClick }) => {
     }
   }
 
-  // Add temperature monitoring (mock data for now)
   if (title === 'Temperature') {
-    const temp = 45; // Mock temperature
-    value = `${temp}°C`;
-    if (temp > 60) {
+    value = `${state.temperature}°C`;
+    if (state.temperature > 60) {
       subtitle = 'High temperature warning';
       color = 'status-warning-temperature';
-    } else if (temp > 50) {
+    } else if (state.temperature > 50) {
       subtitle = 'Elevated temperature';
       color = 'status-warning-battery';
     } else {
@@ -106,12 +102,31 @@ const StatusCard = ({ title, value, subtitle, icon, color, onClick }) => {
       <div className="flex items-start justify-between">
         <div className="flex-1">
           <p className="text-xs sm:text-sm opacity-90 font-medium">{title}</p>
-          <h3 className="text-lg sm:text-2xl font-bold mt-1 sm:mt-2 leading-tight">{value}</h3>
+
+          {title === 'Battery Level' ? (
+            <div className="mt-2 w-40 h-6 border-2 border-white rounded-md overflow-hidden bg-gray-800 relative">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${state.batteryLevel}%` }}
+                transition={{ duration: 1 }}
+                className={`h-full ${
+                  state.batteryLevel > 75
+                    ? 'bg-green-500'
+                    : state.batteryLevel > 40
+                    ? 'bg-yellow-400'
+                    : 'bg-red-500 animate-pulse'
+                }`}
+              />
+              <span className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-sm font-bold">
+                {state.batteryLevel}%
+              </span>
+            </div>
+          ) : (
+            <h3 className="text-lg sm:text-2xl font-bold mt-1 sm:mt-2 leading-tight">{value}</h3>
+          )}
           <p className="text-xs sm:text-sm opacity-80 mt-1 leading-relaxed">{subtitle}</p>
         </div>
-        <div className="text-2xl sm:text-3xl ml-3 flex-shrink-0">
-          {icon}
-        </div>
+        <div className="text-2xl sm:text-3xl ml-3 flex-shrink-0">{icon}</div>
       </div>
       
       {/* Warning indicator */}
@@ -121,9 +136,11 @@ const StatusCard = ({ title, value, subtitle, icon, color, onClick }) => {
           animate={{ opacity: 1, scale: 1 }}
           className="mt-3 flex items-center space-x-2"
         >
-          <div className={`w-2 h-2 rounded-full ${
-            warningLevel === 'critical' ? 'bg-red-300 animate-pulse' : 'bg-yellow-300'
-          }`}></div>
+          <div
+            className={`w-2 h-2 rounded-full ${
+              warningLevel === 'critical' ? 'bg-red-300 animate-pulse' : 'bg-yellow-300'
+            }`}
+          ></div>
           <span className="text-xs opacity-90">
             {warningLevel === 'critical' ? 'Critical Alert' : 'Warning'}
           </span>

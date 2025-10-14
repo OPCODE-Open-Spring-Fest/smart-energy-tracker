@@ -117,7 +117,7 @@ export function SocketProvider({ children }) {
     setSocket(newSocket);
 
     return () => newSocket.close();
-  }, [dispatch, addNotification]);
+  }, [dispatch]);
 
   const value = {
     socket,
