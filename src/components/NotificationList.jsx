@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion as Motion } from 'framer-motion';
 import { useNotification } from '../context/NotificationContext';
 import { formatTime, formatDate } from '../utils/format';
 
@@ -40,10 +40,10 @@ const NotificationList = () => {
         )}
       </div>
 
-      <div className="space-y-3 max-h-96 overflow-y-auto">
+      <div className="space-y-3 max-h-96 overflow-y-auto" aria-live="polite">
         <AnimatePresence>
           {notifications.map((notification, index) => (
-            <motion.div
+            <Motion.div
               key={notification.id}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -72,7 +72,7 @@ const NotificationList = () => {
                   ✕
                 </button>
               </div>
-            </motion.div>
+            </Motion.div>
           ))}
         </AnimatePresence>
 
