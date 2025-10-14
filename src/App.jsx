@@ -54,8 +54,12 @@ function App() {
         <SocketProvider>
           <Router>
             <div className="min-h-screen bg-gray-50">
+              {/* Skip link for keyboard navigation */}
+              <a href="#main-content" className="skip-link">
+                Skip to main content
+              </a>
               <Navigation />
-              <main className="lg:ml-64">
+              <main id="main-content" className="lg:ml-64" role="main">
                 <Routes>
                   <Route path="/" element={<Navigate to="/dashboard" replace />} />
                   <Route path="/dashboard" element={<Dashboard />} />
@@ -74,6 +78,8 @@ function App() {
                 draggable
                 pauseOnHover
                 theme="light"
+                toastClassName="toast-notification"
+                bodyClassName="toast-body"
               />
             </div>
           </Router>
