@@ -15,6 +15,10 @@ export function SocketProvider({ children }) {
     // Connect to mock server - in production, replace with actual server URL
     const newSocket = io('http://localhost:3001', {
       transports: ['websocket'],
+      reconnection: true,
+      reconnectionAttempts: Infinity,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
     });
 
     newSocket.on('connect', () => {
@@ -31,6 +35,41 @@ export function SocketProvider({ children }) {
       addNotification({
         type: 'error',
         message: 'Disconnected from server',
+        timestamp: new Date(),
+      });
+    });
+
+    newSocket.on('connect_error', (err) => {
+      setIsConnected(false);
+      addNotification({
+        type: 'error',
+        message: `Connection error: ${err.message}`,
+        timestamp: new Date(),
+      });
+    });
+
+    newSocket.on('reconnect_attempt', (attempt) => {
+      addNotification({
+        type: 'info',
+        message: `Reconnecting... (attempt ${attempt})`,
+        timestamp: new Date(),
+      });
+    });
+
+    newSocket.on('reconnect', (attempt) => {
+      setIsConnected(true);
+      addNotification({
+        type: 'success',
+        message: `Reconnected after ${attempt} attempt(s)`,
+        timestamp: new Date(),
+      });
+    });
+
+    newSocket.on('reconnect_failed', () => {
+      setIsConnected(false);
+      addNotification({
+        type: 'error',
+        message: 'Reconnection failed',
         timestamp: new Date(),
       });
     });
@@ -62,6 +101,19 @@ export function SocketProvider({ children }) {
       dispatch({ type: 'UPDATE_SENSOR_DATA', payload: data });
     });
 
+    // Surface server-side notifications and command acknowledgements
+    newSocket.on('notification', (notification) => {
+      addNotification(notification);
+    });
+
+    newSocket.on('command_ack', (ack) => {
+      addNotification({
+        type: ack.success ? 'success' : 'error',
+        message: ack.success ? `Command ${ack.command} succeeded` : `Command ${ack.command} failed: ${ack.error || 'unknown error'}`,
+        timestamp: new Date(),
+      });
+    });
+
     setSocket(newSocket);
 
     return () => newSocket.close();
@@ -84,6 +136,7 @@ export function SocketProvider({ children }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useSocket() {
   const context = useContext(SocketContext);
   if (!context) {
