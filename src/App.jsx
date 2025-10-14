@@ -39,7 +39,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { AppProvider } from './context/AppContext';
+import { AppProvider, useApp } from './context/AppContext';
 import { SocketProvider } from './context/SocketContext';
 import { NotificationProvider } from './context/NotificationContext';
 import Dashboard from './pages/Dashboard';
@@ -53,6 +53,7 @@ function App() {
       <NotificationProvider>
         <SocketProvider>
           <Router>
+            <InnerApp />
             <div className="min-h-screen bg-gray-50">
               {/* Skip link for keyboard navigation */}
               <a href="#main-content" className="skip-link">
@@ -86,6 +87,37 @@ function App() {
         </SocketProvider>
       </NotificationProvider>
     </AppProvider>
+  );
+}
+
+function InnerApp() {
+  const { state } = useApp();
+  const toastTheme = state.theme === 'dark' ? 'dark' : 'light';
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Navigation />
+      <main className="lg:ml-64">
+        <Routes>
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/logs" element={<Logs />} />
+          <Route path="/settings" element={<Settings />} />
+        </Routes>
+      </main>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme={toastTheme}
+      />
+    </div>
   );
 }
 
