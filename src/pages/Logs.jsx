@@ -159,7 +159,7 @@ const Logs = () => {
                   className="hover:bg-gray-50 transition-colors"
                 >
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getLogColor(log.type)}`}>
+                    <span className={`badge inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getLogColor(log.type)} ${log.type}`}>
                       <span className="mr-2">{getLogIcon(log.type)}</span>
                       {log.type}
                     </span>

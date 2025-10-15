@@ -1,12 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../context/AppContext';
 
 const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(typeof window !== 'undefined' ? window.innerWidth >= 1024 : false);
   const location = useLocation();
   const { state } = useApp();
+
+  useEffect(() => {
+    const handleResize = () => {
+      const desktopNow = window.innerWidth >= 1024;
+      setIsDesktop(desktopNow);
+      if (desktopNow) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    // Initialize on mount in case of SSR/hydration differences
+    handleResize();
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const navigationItems = [
     { path: '/dashboard', label: 'Dashboard', icon: '📊' },
@@ -29,20 +45,36 @@ const Navigation = () => {
       <div className="lg:hidden fixed top-4 left-4 z-50">
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="p-2 bg-white rounded-lg shadow-lg"
-          aria-label="Open menu"
+          className="p-3 bg-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          aria-label={isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+          aria-expanded={isMobileMenuOpen}
         >
           <div className="w-6 h-6 flex flex-col justify-center space-y-1">
-            <div className="w-full h-0.5 bg-gray-600"></div>
-            <div className="w-full h-0.5 bg-gray-600"></div>
-            <div className="w-full h-0.5 bg-gray-600"></div>
+            <motion.div
+              animate={{ 
+                rotate: isMobileMenuOpen ? 45 : 0,
+                y: isMobileMenuOpen ? 6 : 0
+              }}
+              className="w-full h-0.5 bg-gray-600 origin-center"
+            ></motion.div>
+            <motion.div
+              animate={{ opacity: isMobileMenuOpen ? 0 : 1 }}
+              className="w-full h-0.5 bg-gray-600"
+            ></motion.div>
+            <motion.div
+              animate={{ 
+                rotate: isMobileMenuOpen ? -45 : 0,
+                y: isMobileMenuOpen ? -6 : 0
+              }}
+              className="w-full h-0.5 bg-gray-600 origin-center"
+            ></motion.div>
           </div>
         </button>
       </div>
 
       {/* Sidebar */}
       <AnimatePresence>
-        {(isMobileMenuOpen || window.innerWidth >= 1024) && (
+        {(isMobileMenuOpen || isDesktop) && (
           <motion.nav
             initial={{ x: -320 }}
             animate={{ x: 0 }}
@@ -76,13 +108,14 @@ const Navigation = () => {
                     <Link
                       to={item.path}
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
+                      className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
                         location.pathname === item.path
-                          ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700'
-                          : 'text-gray-700 hover:bg-gray-50'
+                          ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700 shadow-sm'
+                          : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
                       }`}
+                      aria-current={location.pathname === item.path ? 'page' : undefined}
                     >
-                      <span className="text-xl">{item.icon}</span>
+                      <span className="text-xl" aria-hidden="true">{item.icon}</span>
                       <span className="font-medium">{item.label}</span>
                     </Link>
                   </li>

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer } from 'react';
+import React, { createContext, useContext, useReducer, useCallback } from 'react';
 import { toast } from 'react-toastify';
 
 const NotificationContext = createContext();
@@ -36,7 +36,7 @@ function notificationReducer(state, action) {
 export function NotificationProvider({ children }) {
   const [state, dispatch] = useReducer(notificationReducer, initialState);
 
-  const addNotification = (notification) => {
+  const addNotification = useCallback((notification) => {
     dispatch({ type: 'ADD_NOTIFICATION', payload: notification });
     
     // Show toast based on notification type
@@ -53,15 +53,15 @@ export function NotificationProvider({ children }) {
       default:
         toast.info(notification.message);
     }
-  };
+  }, []);
 
-  const removeNotification = (id) => {
+  const removeNotification = useCallback((id) => {
     dispatch({ type: 'REMOVE_NOTIFICATION', payload: id });
-  };
+  }, []);
 
-  const clearNotifications = () => {
+  const clearNotifications = useCallback(() => {
     dispatch({ type: 'CLEAR_NOTIFICATIONS' });
-  };
+  }, []);
 
   return (
     <NotificationContext.Provider value={{
