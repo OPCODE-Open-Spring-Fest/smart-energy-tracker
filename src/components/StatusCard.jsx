@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useApp } from '../context/AppContext';
 
-const StatusCard = ({ title, value, subtitle, icon, color, onClick }) => {
+const StatusCard = ({ title, value: propValue, subtitle: propSubtitle, icon, color: propColor, onClick }) => {
   const { state } = useApp();
 
   const getStatusColor = () => {
@@ -37,6 +37,11 @@ const StatusCard = ({ title, value, subtitle, icon, color, onClick }) => {
   };
 
   const warningLevel = getWarningLevel();
+
+  // Build derived values without mutating props
+  let value = propValue;
+  let subtitle = propSubtitle;
+  let color = propColor || 'status-offline';
 
   if (title === 'Inverter Status') {
     value = `${getStatusIcon()} ${state.inverterStatus.toUpperCase()}`;
@@ -77,11 +82,24 @@ const StatusCard = ({ title, value, subtitle, icon, color, onClick }) => {
     }
   }
 
+  if (title === 'Energy Usage') {
+    value = `${state.energyConsumption}W`;
+    if (state.energyConsumption > 500) {
+      subtitle = 'High consumption';
+      color = 'status-warning-battery';
+    } else if (state.energyConsumption > 300) {
+      subtitle = 'Moderate consumption';
+      color = 'status-standby';
+    } else {
+      subtitle = 'Low consumption';
+      color = 'status-online';
+    }
+  }
+
   return (
     <motion.div
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
-      className={`rounded-xl p-6 text-white shadow-lg cursor-pointer transition-all duration-300 ${color} status-card`}
       className={`rounded-xl p-4 sm:p-6 text-white shadow-lg cursor-pointer transition-all duration-300 interactive ${color}`}
       onClick={onClick}
       role="button"
