@@ -81,6 +81,8 @@ const Navigation = () => {
             exit={{ x: -320 }}
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
             className="fixed left-0 top-0 h-full w-64 bg-white shadow-xl z-40 lg:z-auto"
+            role="navigation"
+            aria-label="Primary"
           >
             <div className="p-6 border-b border-gray-200">
               <div className="flex items-center space-x-3">
