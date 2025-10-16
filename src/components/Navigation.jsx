@@ -23,6 +23,27 @@ const Navigation = () => {
     }
   };
 
+  // Keyboard navigation handler for navigation links
+  const handleKeyDown = (e, idx) => {
+    if (e.key === "ArrowDown" || e.key === "ArrowRight") {
+      e.preventDefault();
+      const next = document.querySelectorAll('[role="menuitem"]')[idx + 1];
+      if (next) next.focus();
+    } else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
+      e.preventDefault();
+      const prev = document.querySelectorAll('[role="menuitem"]')[idx - 1];
+      if (prev) prev.focus();
+    } else if (e.key === "Home") {
+      e.preventDefault();
+      const first = document.querySelectorAll('[role="menuitem"]')[0];
+      if (first) first.focus();
+    } else if (e.key === "End") {
+      e.preventDefault();
+      const items = document.querySelectorAll('[role="menuitem"]');
+      if (items.length) items[items.length - 1].focus();
+    }
+  };
+
   return (
     <>
       {/* Mobile Menu Button */}
@@ -30,6 +51,7 @@ const Navigation = () => {
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           className="p-2 bg-white rounded-lg shadow-lg"
+          aria-label="Open main navigation menu"
         >
           <div className="w-6 h-6 flex flex-col justify-center space-y-1">
             <div className="w-full h-0.5 bg-gray-600"></div>
@@ -48,6 +70,8 @@ const Navigation = () => {
             exit={{ x: -320 }}
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
             className="fixed left-0 top-0 h-full w-64 bg-white shadow-xl z-40 lg:z-auto"
+            role="navigation"
+            aria-label="Main Navigation"
           >
             <div className="p-6 border-b border-gray-200">
               <div className="flex items-center space-x-3">
@@ -67,17 +91,22 @@ const Navigation = () => {
             </div>
 
             <div className="p-4">
-              <ul className="space-y-2">
-                {navigationItems.map((item) => (
-                  <li key={item.path}>
+              <ul className="space-y-2" role="menubar" aria-label="Main menu">
+                {navigationItems.map((item, idx) => (
+                  <li key={item.path} role="none">
                     <Link
                       to={item.path}
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
+                      className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
                         location.pathname === item.path
                           ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700'
                           : 'text-gray-700 hover:bg-gray-50'
                       }`}
+                      aria-label={item.label + (location.pathname === item.path ? ' (current page)' : '')}
+                      role="menuitem"
+                      tabIndex={0}
+                      aria-current={location.pathname === item.path ? "page" : undefined}
+                      onKeyDown={e => handleKeyDown(e, idx)}
                     >
                       <span className="text-xl">{item.icon}</span>
                       <span className="font-medium">{item.label}</span>
@@ -120,6 +149,8 @@ const Navigation = () => {
             exit={{ opacity: 0 }}
             onClick={() => setIsMobileMenuOpen(false)}
             className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
+            aria-label="Close main navigation menu"
+            tabIndex={0}
           />
         )}
       </AnimatePresence>
