@@ -50,21 +50,6 @@ const EnergyCharts = () => {
   return (
     <div className="space-y-4 sm:space-y-6">
       {/* Real-time Energy Consumption */}
-      <div className="chart-container p-6">
-        <h3 className="text-xl font-bold text-gray-800 mb-4">Real-time Energy Overview</h3>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-          <div className="bg-blue-50 p-4 rounded-lg stat-card">
-            <p className="text-sm text-blue-600">Current Consumption</p>
-            <p className="text-2xl font-bold text-blue-800">{state.energyConsumption} W</p>
-          </div>
-          <div className="bg-green-50 p-4 rounded-lg stat-card">
-            <p className="text-sm text-green-600">Battery Level</p>
-            <p className="text-2xl font-bold text-green-800">{state.batteryLevel}%</p>
-          </div>
-          <div className="bg-orange-50 p-4 rounded-lg stat-card">
-            <p className="text-sm text-orange-600">Temperature</p>
-            <p className="text-2xl font-bold text-orange-800">{state.temperature}°C</p>
-          </div>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

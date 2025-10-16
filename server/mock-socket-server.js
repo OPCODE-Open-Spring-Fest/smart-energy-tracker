@@ -57,6 +57,14 @@ io.on('connection', (socket) => {
   socket.emit('sensorData', { temperature: initialData.temperature, humidity: initialData.humidity });
   socket.emit('powerStatus', { powerCut: initialData.powerCut });
 
+  // Send initial system startup log
+  socket.emit('systemLog', {
+    type: 'success',
+    message: 'System initialized successfully',
+    source: 'system',
+    timestamp: new Date()
+  });
+
   // intervals object to clear later
   const intervals = {};
 
