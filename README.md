@@ -83,6 +83,17 @@ invertorguard/
 
 ```
 
+
+# Run frontend
+```
+npm run dev
+```
+
+# Run backend
+```
+npm start
+```
+
 1. Adding Features or Components
 
 What to contribute

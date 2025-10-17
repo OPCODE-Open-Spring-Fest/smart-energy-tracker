@@ -73,51 +73,7 @@ const EnergyCharts = () => {
       >
         <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-4">Real-time Energy Overview</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-4 sm:mb-6">
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            className="bg-blue-50 p-3 sm:p-4 rounded-lg border border-blue-100"
-          >
-            <p className="text-xs sm:text-sm text-blue-600 font-medium">Current Consumption</p>
-            <motion.p
-              key={state.energyConsumption}
-              initial={{ scale: 1.1, opacity: 0.7 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.3 }}
-              className="text-xl sm:text-2xl font-bold text-blue-800"
-            >
-              {state.energyConsumption} W
-            </motion.p>
-          </motion.div>
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            className="bg-green-50 p-3 sm:p-4 rounded-lg border border-green-100"
-          >
-            <p className="text-xs sm:text-sm text-green-600 font-medium">Battery Level</p>
-            <motion.p
-              key={state.batteryLevel}
-              initial={{ scale: 1.1, opacity: 0.7 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.3 }}
-              className="text-xl sm:text-2xl font-bold text-green-800"
-            >
-              {state.batteryLevel}%
-            </motion.p>
-          </motion.div>
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            className="bg-orange-50 p-3 sm:p-4 rounded-lg border border-orange-100 sm:col-span-2 lg:col-span-1"
-          >
-            <p className="text-xs sm:text-sm text-orange-600 font-medium">Temperature</p>
-            <motion.p
-              key={state.temperature}
-              initial={{ scale: 1.1, opacity: 0.7 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.3 }}
-              className="text-xl sm:text-2xl font-bold text-orange-800"
-            >
-              {state.temperature}°C
-            </motion.p>
-          </motion.div>
+
         </div>
         <ResponsiveContainer width="100%" height={250}>
           <AreaChart data={energyData}>
@@ -172,6 +128,8 @@ const EnergyCharts = () => {
           </LineChart>
         </ResponsiveContainer>
       </motion.div>
+        </div>
+      </div>
     </div>
   );
 };

@@ -54,35 +54,6 @@ function App() {
         <SocketProvider>
           <Router>
             <InnerApp />
-            <div className="min-h-screen bg-gray-50">
-              {/* Skip link for keyboard navigation */}
-              <a href="#main-content" className="skip-link">
-                Skip to main content
-              </a>
-              <Navigation />
-              <main id="main-content" className="lg:ml-64" role="main">
-                <Routes>
-                  <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/logs" element={<Logs />} />
-                  <Route path="/settings" element={<Settings />} />
-                </Routes>
-              </main>
-              <ToastContainer
-                position="top-right"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="light"
-                toastClassName="toast-notification"
-                bodyClassName="toast-body"
-              />
-            </div>
           </Router>
         </SocketProvider>
       </NotificationProvider>
