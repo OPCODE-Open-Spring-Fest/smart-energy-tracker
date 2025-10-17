@@ -1,6 +1,19 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import {
+  LineChart,
+  Line,
+  AreaChart,
+  Area,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from 'recharts';
 import { useApp } from '../context/AppContext';
 
 const EnergyCharts = () => {
@@ -49,32 +62,66 @@ const EnergyCharts = () => {
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      {/* Real-time Energy Consumption */}
-      <div className="chart-container p-6">
-        <h3 className="text-xl font-bold text-gray-800 mb-4">Real-time Energy Overview</h3>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-          <div className="bg-blue-50 p-4 rounded-lg stat-card">
-            <p className="text-sm text-blue-600">Current Consumption</p>
-            <p className="text-2xl font-bold text-blue-800">{state.energyConsumption} W</p>
-          </div>
-          <div className="bg-green-50 p-4 rounded-lg stat-card">
-            <p className="text-sm text-green-600">Battery Level</p>
-            <p className="text-2xl font-bold text-green-800">{state.batteryLevel}%</p>
-          </div>
-          <div className="bg-orange-50 p-4 rounded-lg stat-card">
-            <p className="text-sm text-orange-600">Temperature</p>
-            <p className="text-2xl font-bold text-orange-800">{state.temperature}°C</p>
-          </div>
+
+      {/* Real-time Charts */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
         className="chart-container p-4 sm:p-6"
       >
-        <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-4">Real-time Energy Overview</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-4 sm:mb-6">
+        <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-4">Real-time Energy Chart</h3>
 
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-4 sm:mb-6">
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            className="bg-blue-50 p-3 sm:p-4 rounded-lg border border-blue-100"
+          >
+            <p className="text-xs sm:text-sm text-blue-600 font-medium">Current Consumption</p>
+            <motion.p
+              key={state.energyConsumption}
+              initial={{ scale: 1.1, opacity: 0.7 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.3 }}
+              className="text-xl sm:text-2xl font-bold text-blue-800"
+            >
+              {state.energyConsumption} W
+            </motion.p>
+          </motion.div>
+
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            className="bg-green-50 p-3 sm:p-4 rounded-lg border border-green-100"
+          >
+            <p className="text-xs sm:text-sm text-green-600 font-medium">Battery Level</p>
+            <motion.p
+              key={state.batteryLevel}
+              initial={{ scale: 1.1, opacity: 0.7 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.3 }}
+              className="text-xl sm:text-2xl font-bold text-green-800"
+            >
+              {state.batteryLevel}%
+            </motion.p>
+          </motion.div>
+
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            className="bg-orange-50 p-3 sm:p-4 rounded-lg border border-orange-100 sm:col-span-2 lg:col-span-1"
+          >
+            <p className="text-xs sm:text-sm text-orange-600 font-medium">Temperature</p>
+            <motion.p
+              key={state.temperature}
+              initial={{ scale: 1.1, opacity: 0.7 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.3 }}
+              className="text-xl sm:text-2xl font-bold text-orange-800"
+            >
+              {state.temperature}°C
+            </motion.p>
+          </motion.div>
         </div>
+
         <ResponsiveContainer width="100%" height={250}>
           <AreaChart data={energyData}>
             <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
@@ -82,8 +129,22 @@ const EnergyCharts = () => {
             <YAxis stroke="#666" fontSize={12} />
             <Tooltip content={<CustomTooltip />} />
             <Legend />
-            <Area type="monotone" dataKey="consumption" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.3} name="Consumption (W)" />
-            <Area type="monotone" dataKey="battery" stroke="#10b981" fill="#10b981" fillOpacity={0.3} name="Battery (%)" />
+            <Area
+              type="monotone"
+              dataKey="consumption"
+              stroke="#3b82f6"
+              fill="#3b82f6"
+              fillOpacity={0.3}
+              name="Consumption (W)"
+            />
+            <Area
+              type="monotone"
+              dataKey="battery"
+              stroke="#10b981"
+              fill="#10b981"
+              fillOpacity={0.3}
+              name="Battery (%)"
+            />
           </AreaChart>
         </ResponsiveContainer>
       </motion.div>
@@ -124,12 +185,17 @@ const EnergyCharts = () => {
             <YAxis stroke="#666" fontSize={12} domain={[0, 100]} />
             <Tooltip content={<CustomTooltip />} />
             <Legend />
-            <Line type="monotone" dataKey="battery" stroke="#10b981" strokeWidth={3} dot={{ fill: '#10b981' }} name="Battery Level (%)" />
+            <Line
+              type="monotone"
+              dataKey="battery"
+              stroke="#10b981"
+              strokeWidth={3}
+              dot={{ fill: '#10b981' }}
+              name="Battery Level (%)"
+            />
           </LineChart>
         </ResponsiveContainer>
       </motion.div>
-        </div>
-      </div>
     </div>
   );
 };
