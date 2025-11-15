@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion as Motion } from 'framer-motion';
 import { useNotification } from '../context/NotificationContext';
 import { formatTime, formatDate } from '../utils/format';
 
@@ -27,23 +27,24 @@ const NotificationList = () => {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-xl font-bold text-gray-800">Notifications</h3>
+    <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6">
+      <div className="flex items-center justify-between mb-4 sm:mb-6">
+        <h3 className="text-lg sm:text-xl font-bold text-gray-800">Notifications</h3>
         {notifications.length > 0 && (
           <button
             onClick={clearNotifications}
-            className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+            className="text-xs sm:text-sm text-blue-600 hover:text-blue-800 font-medium px-3 py-1 rounded-md hover:bg-blue-50 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            aria-label="Clear all notifications"
           >
             Clear All
           </button>
         )}
       </div>
 
-      <div className="space-y-3 max-h-96 overflow-y-auto">
+      <div className="space-y-3 max-h-96 overflow-y-auto" aria-live="polite">
         <AnimatePresence>
           {notifications.map((notification, index) => (
-            <motion.div
+            <Motion.div
               key={notification.id}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -67,12 +68,13 @@ const NotificationList = () => {
                 </div>
                 <button
                   onClick={() => removeNotification(notification.id)}
-                  className="text-gray-400 hover:text-gray-600 transition-colors ml-2"
+                  className="text-gray-400 hover:text-gray-600 transition-all duration-300 ml-2 p-1 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-1"
+                  aria-label={`Remove notification: ${notification.message}`}
                 >
                   ✕
                 </button>
               </div>
-            </motion.div>
+            </Motion.div>
           ))}
         </AnimatePresence>
 

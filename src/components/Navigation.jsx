@@ -1,12 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../context/AppContext';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+
 
 const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(typeof window !== 'undefined' ? window.innerWidth >= 1024 : false);
   const location = useLocation();
   const { state } = useApp();
+  const { logoutUser } = useAuth();
+  const navigate = useNavigate();
+
+
+  useEffect(() => {
+    const handleResize = () => {
+      const desktopNow = window.innerWidth >= 1024;
+      setIsDesktop(desktopNow);
+      if (desktopNow) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    // Initialize on mount in case of SSR/hydration differences
+    handleResize();
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const navigationItems = [
     { path: '/dashboard', label: 'Dashboard', icon: '📊' },
@@ -54,16 +76,31 @@ const Navigation = () => {
           aria-label="Open main navigation menu"
         >
           <div className="w-6 h-6 flex flex-col justify-center space-y-1">
-            <div className="w-full h-0.5 bg-gray-600"></div>
-            <div className="w-full h-0.5 bg-gray-600"></div>
-            <div className="w-full h-0.5 bg-gray-600"></div>
+            <motion.div
+              animate={{ 
+                rotate: isMobileMenuOpen ? 45 : 0,
+                y: isMobileMenuOpen ? 6 : 0
+              }}
+              className="w-full h-0.5 bg-gray-600 origin-center"
+            ></motion.div>
+            <motion.div
+              animate={{ opacity: isMobileMenuOpen ? 0 : 1 }}
+              className="w-full h-0.5 bg-gray-600"
+            ></motion.div>
+            <motion.div
+              animate={{ 
+                rotate: isMobileMenuOpen ? -45 : 0,
+                y: isMobileMenuOpen ? -6 : 0
+              }}
+              className="w-full h-0.5 bg-gray-600 origin-center"
+            ></motion.div>
           </div>
         </button>
       </div>
 
       {/* Sidebar */}
       <AnimatePresence>
-        {(isMobileMenuOpen || window.innerWidth >= 1024) && (
+        {(isMobileMenuOpen || isDesktop) && (
           <motion.nav
             initial={{ x: -320 }}
             animate={{ x: 0 }}
@@ -99,8 +136,8 @@ const Navigation = () => {
                       onClick={() => setIsMobileMenuOpen(false)}
                       className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
                         location.pathname === item.path
-                          ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700'
-                          : 'text-gray-700 hover:bg-gray-50'
+                          ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700 shadow-sm'
+                          : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
                       }`}
                       aria-label={item.label + (location.pathname === item.path ? ' (current page)' : '')}
                       role="menuitem"
@@ -108,7 +145,7 @@ const Navigation = () => {
                       aria-current={location.pathname === item.path ? "page" : undefined}
                       onKeyDown={e => handleKeyDown(e, idx)}
                     >
-                      <span className="text-xl">{item.icon}</span>
+                      <span className="text-xl" aria-hidden="true">{item.icon}</span>
                       <span className="font-medium">{item.label}</span>
                     </Link>
                   </li>
@@ -118,6 +155,28 @@ const Navigation = () => {
               {/* System Info */}
               <div className="mt-8 p-4 bg-gray-50 rounded-lg">
                 <h3 className="font-semibold text-gray-800 mb-3">System Info</h3>
+                
+                {/* Logout Button */}
+                  <div className="p-4 mt-6 border-t border-gray-200">
+                    <button
+                      onClick={async () => {
+                        try {
+                          await fetch("http://localhost:3000/api/logout", {
+                            method: "POST",
+                            credentials: "include",
+                          });
+                        } catch (err) {
+                          console.error("Logout failed:", err);
+                        }
+                        logoutUser();
+                        localStorage.removeItem("user");
+                        navigate("/");
+                      }}
+                      className="w-full flex items-center justify-center px-4 py-3 rounded-lg bg-red-500 text-white font-semibold shadow-md hover:bg-red-600 transition-all duration-300"
+                    >
+                      🚪 Logout
+                    </button>
+                  </div>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Battery</span>

@@ -49,72 +49,78 @@ const ManualSwitch = () => {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-6">
-      <h3 className="text-xl font-bold text-gray-800 mb-6">Manual Control</h3>
+    <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6">
+      <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-4 sm:mb-6">Manual Control</h3>
       
       {/* Mode Toggle */}
-      <div className="flex items-center justify-between mb-6 p-4 bg-gray-50 rounded-lg">
-        <div>
-          <p className="font-semibold text-gray-800">Control Mode</p>
-          <p className="text-sm text-gray-600">
+      <div className="flex items-center justify-between mb-4 sm:mb-6 p-3 sm:p-4 bg-gray-50 rounded-lg">
+        <div className="flex-1">
+          <p className="font-semibold text-gray-800 text-sm sm:text-base">Control Mode</p>
+          <p className="text-xs sm:text-sm text-gray-600 mt-1">
             {state.isManualMode ? 'Manual Control Active' : 'Automatic Mode Active'}
           </p>
         </div>
         <motion.button
           whileTap={{ scale: 0.95 }}
           onClick={handleToggle}
-          className={`relative w-16 h-8 rounded-full transition-colors ${
+          className={`relative w-14 h-7 sm:w-16 sm:h-8 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
             state.isManualMode ? 'bg-blue-600' : 'bg-gray-300'
           }`}
+          aria-label={`Switch to ${state.isManualMode ? 'automatic' : 'manual'} mode`}
+          aria-pressed={state.isManualMode}
         >
           <motion.div
-            className="w-6 h-6 bg-white rounded-full absolute top-1"
-            animate={{ left: state.isManualMode ? '2rem' : '0.25rem' }}
+            className="w-5 h-5 sm:w-6 sm:h-6 bg-white rounded-full absolute top-1 shadow-md"
+            animate={{ left: state.isManualMode ? '1.75rem' : '0.25rem' }}
             transition={{ type: "spring", stiffness: 500, damping: 30 }}
           />
         </motion.button>
       </div>
 
       {/* Control Buttons */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4">
         <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+          whileHover={{ scale: state.isManualMode ? 1.05 : 1 }}
+          whileTap={{ scale: state.isManualMode ? 0.95 : 1 }}
           onClick={() => handleInverterControl('turn_on')}
           disabled={!state.isManualMode}
-          className={`p-4 rounded-lg font-semibold text-white transition-all ${
+          className={`p-3 sm:p-4 rounded-lg font-semibold text-white transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 ${
             state.isManualMode
-              ? 'bg-green-600 hover:bg-green-700 cursor-pointer'
-              : 'bg-gray-400 cursor-not-allowed'
+              ? 'bg-green-600 hover:bg-green-700 cursor-pointer focus:ring-green-500'
+              : 'bg-gray-400 cursor-not-allowed opacity-60'
           }`}
+          aria-label="Turn on inverter"
+          aria-disabled={!state.isManualMode}
         >
           <div className="text-center">
-            <div className="text-2xl mb-2">🔌</div>
-            <div>Turn On</div>
+            <div className="text-xl sm:text-2xl mb-1 sm:mb-2" aria-hidden="true">🔌</div>
+            <div className="text-xs sm:text-sm">Turn On</div>
           </div>
         </motion.button>
 
         <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+          whileHover={{ scale: state.isManualMode ? 1.05 : 1 }}
+          whileTap={{ scale: state.isManualMode ? 0.95 : 1 }}
           onClick={() => handleInverterControl('turn_off')}
           disabled={!state.isManualMode}
-          className={`p-4 rounded-lg font-semibold text-white transition-all ${
+          className={`p-3 sm:p-4 rounded-lg font-semibold text-white transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 ${
             state.isManualMode
-              ? 'bg-red-600 hover:bg-red-700 cursor-pointer'
-              : 'bg-gray-400 cursor-not-allowed'
+              ? 'bg-red-600 hover:bg-red-700 cursor-pointer focus:ring-red-500'
+              : 'bg-gray-400 cursor-not-allowed opacity-60'
           }`}
+          aria-label="Turn off inverter"
+          aria-disabled={!state.isManualMode}
         >
           <div className="text-center">
-            <div className="text-2xl mb-2">🔋</div>
-            <div>Turn Off</div>
+            <div className="text-xl sm:text-2xl mb-1 sm:mb-2" aria-hidden="true">🔋</div>
+            <div className="text-xs sm:text-sm">Turn Off</div>
           </div>
         </motion.button>
       </div>
 
       {/* Status Info */}
-      <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-        <p className="text-sm text-blue-800">
+      <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-blue-50 rounded-lg">
+        <p className="text-xs sm:text-sm text-blue-800 leading-relaxed">
           {state.isManualMode 
             ? 'Manual control is active. Use buttons above to control inverter.'
             : 'Automatic mode is active. Inverter is controlled by schedules and sensors.'

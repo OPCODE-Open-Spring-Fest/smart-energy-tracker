@@ -5,14 +5,27 @@ import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
+import cookieParser from "cookie-parser";
+import userrouter from "./routes/user.route.js"
+import dotenv from "dotenv";
+import connectDB from "./utils/connect-db.js"
+
+dotenv.config();
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: ["http://localhost:5173"], // 👈 your React app
+  credentials: true,                 // 👈 allow cookies
+}));
+app.use(express.json());
+app.use(cookieParser());
+app.use("/api",userrouter)
+
 
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: ["http://localhost:5173", "http://localhost:3000"],
     methods: ["GET", "POST"]
   }
 });
@@ -28,10 +41,41 @@ const generateInverterStatus = () => {
 
 const generateBatteryLevel = () => Math.max(20, Math.min(100, Math.floor(Math.random() * 30) + 70));
 const generateEnergyConsumption = () => Math.floor(Math.random() * 500) + 100;
-const generateSensorData = () => ({
-  temperature: Math.floor(Math.random() * 10) + 28,
-  humidity: Math.floor(Math.random() * 20) + 60
-});
+const generateSensorData = async () => {
+  const latitude = 25.2500;  // Bhagalpur coordinates
+  const longitude = 87.0169;
+
+  try {
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&hourly=relativehumidity_2m`;
+    const response = await fetch(url);
+    const data = await response.json();
+    if (
+      data &&
+      data.current_weather &&
+      typeof data.current_weather.temperature === "number"
+    ) {
+      const temperature = data.current_weather.temperature;
+      const humidity =
+        data.hourly?.relativehumidity_2m?.[0] ??
+        Math.floor(Math.random() * 20) + 60; // fallback if humidity missing
+      return { temperature, humidity };
+    } else {
+      // Invalid data → fallback
+      return {
+        temperature: Math.floor(Math.random() * 10) + 28,
+        humidity: Math.floor(Math.random() * 20) + 60,
+      };
+    }
+  } catch (error) {
+    console.error("API error:", error);
+    // API failed → fallback
+    return {
+      temperature: Math.floor(Math.random() * 10) + 28,
+      humidity: Math.floor(Math.random() * 20) + 60,
+    };
+  }
+};
+
 
 const initializeClientData = (socketId) => {
   connectedClients.set(socketId, {
@@ -56,6 +100,14 @@ io.on('connection', (socket) => {
   socket.emit('energyUpdate', { consumption: initialData.energyConsumption });
   socket.emit('sensorData', { temperature: initialData.temperature, humidity: initialData.humidity });
   socket.emit('powerStatus', { powerCut: initialData.powerCut });
+
+  // Send initial system startup log
+  socket.emit('systemLog', {
+    type: 'success',
+    message: 'System initialized successfully',
+    source: 'system',
+    timestamp: new Date()
+  });
 
   // intervals object to clear later
   const intervals = {};
@@ -95,10 +147,10 @@ io.on('connection', (socket) => {
     }
   }, 5000);
 
-  intervals.sensor = setInterval(() => {
+  intervals.sensor = setInterval(async() => {
     const clientData = connectedClients.get(socket.id);
     if (clientData) {
-      const sensorData = generateSensorData();
+      const sensorData = await generateSensorData();
       clientData.temperature = sensorData.temperature;
       clientData.humidity = sensorData.humidity;
       socket.emit('sensorData', sensorData);
@@ -224,13 +276,30 @@ app.get('/info', (req, res) => {
 });
 
 const PORT = process.env.PORT || 3001;
-server.listen(PORT, () => {
-  console.log(`🚀 InvertorGuard Mock Socket.IO server running on port ${PORT}`);
-  console.log(`📍 Health check: http://localhost:${PORT}/health`);
-  console.log(`📍 Server info: http://localhost:${PORT}/info`);
-  console.log(`🔌 Connect your React app to: http://localhost:${PORT}`);
-  console.log(`👥 Ready for client connections...`);
-});
+
+
+connectDB()
+  .then(() => {
+    server.listen(PORT, () => {
+      console.log(`🚀 InvertorGuard Mock Socket.IO server running on port ${PORT}`);
+      console.log(`📍 Health check: http://localhost:${PORT}/health`);
+      console.log(`📍 Server info: http://localhost:${PORT}/info`);
+      console.log(`🔌 Connect your React app to: http://localhost:${PORT}`);
+      console.log(`👥 Ready for client connections...`);
+    })
+  })
+  .catch((err) => {
+    console.error("❌ Database connection failed:", err);
+  });
+
+
+// server.listen(PORT, () => {
+//   console.log(`🚀 InvertorGuard Mock Socket.IO server running on port ${PORT}`);
+//   console.log(`📍 Health check: http://localhost:${PORT}/health`);
+//   console.log(`📍 Server info: http://localhost:${PORT}/info`);
+//   console.log(`🔌 Connect your React app to: http://localhost:${PORT}`);
+//   console.log(`👥 Ready for client connections...`);
+// })
 
 // Graceful shutdown
 process.on('SIGINT', () => {
