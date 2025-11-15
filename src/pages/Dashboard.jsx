@@ -133,34 +133,10 @@ const Dashboard = () => {
         role="region"
         aria-label="System status cards"
       >
-        <StatusCard
-          title="Inverter Status"
-          value="Online"
-          subtitle="All systems normal"
-          icon="🔌"
-          color="status-online"
-        />
-        <StatusCard
-          title="Power Supply"
-          value="Grid Active"
-          subtitle="Stable power supply"
-          icon="⚡"
-          color="status-online"
-        />
-        <StatusCard
-          title="Battery Level"
-          value="75%"
-          subtitle="Adequate charge"
-          icon="🔋"
-          color="status-online"
-        />
-        <StatusCard
-          title="Temperature"
-          value="45°C"
-          subtitle="Normal temperature"
-          icon="🌡️"
-          color="status-online"
-        />
+        <StatusCard title="Inverter Status" icon="🔌" />
+        <StatusCard title="Power Supply" icon="⚡" />
+        <StatusCard title="Battery Level" icon="🔋" />
+        <StatusCard title="Temperature" icon="🌡️" />
       </motion.div>
 
       {/* Energy Usage Card - Separate row for better mobile layout */}
@@ -172,41 +148,9 @@ const Dashboard = () => {
         role="region"
         aria-label="Energy usage information"
       >
-        <StatusCard
-          title="Energy Usage"
-          value="320W"
-          subtitle="Moderate consumption"
-          icon="📊"
-          color="status-standby"
-        />
-      </motion.div>
-
-      {/* Utility Functions Display Cards */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.3 }}
-        className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8"
-      >
-        <StatusCard
-          title="Estimated Backup Time"
-          value={backupTime}
-          subtitle={`At ${currentConsumption}W consumption`}
-          icon="⏱️"
-          color="status-online"
-        />
-        <StatusCard
-          title="System Efficiency"
-          value={`${efficiencyData.percentage}%`}
-          subtitle={`Rating: ${efficiencyData.rating}`}
-          icon="⚡"
-          color={
-            efficiencyData.color === "green"
-              ? "status-online"
-              : efficiencyData.color === "yellow"
-              ? "status-warning"
-              : "status-error"
-          }
+        <StatusCard 
+          title="Energy Usage" 
+          icon="📊" 
         />
       </motion.div>
 

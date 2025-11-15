@@ -13,6 +13,7 @@ const initialState = {
   isManualMode: false,
   currentTime: new Date().toLocaleTimeString(),
   theme: 'light',
+  logs: [],
 };
 
 function appReducer(state, action) {
@@ -47,6 +48,18 @@ function appReducer(state, action) {
       return { ...state, currentTime: action.payload };
     case 'SET_THEME':
       return { ...state, theme: action.payload };
+    case 'ADD_LOG':
+      const newLog = {
+        id: Date.now() + Math.random(),
+        ...action.payload,
+        timestamp: action.payload.timestamp || new Date()
+      };
+      return { 
+        ...state, 
+        logs: [newLog, ...state.logs].slice(0, 1000) // Keep max 1000 logs
+      };
+    case 'CLEAR_LOGS':
+      return { ...state, logs: [] };
     default:
       return state;
   }
