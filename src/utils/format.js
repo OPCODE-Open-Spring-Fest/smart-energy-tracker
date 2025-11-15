@@ -38,3 +38,41 @@ export const formatEnergy = (watts) => {
   }
   return `${watts} W`;
 };
+
+// Calculate estimated backup time based on battery level and current consumption
+export const calculateBackupTime = (batteryLevel, currentConsumption, batteryCapacity = 100) => {
+  if (currentConsumption <= 0) return 'Indefinite';
+  
+  const remainingCapacity = (batteryLevel / 100) * batteryCapacity;
+  const hoursRemaining = remainingCapacity / (currentConsumption / 1000); // Convert watts to kW
+  
+  if (hoursRemaining < 1) {
+    const minutes = Math.round(hoursRemaining * 60);
+    return `${minutes} minutes`;
+  } else if (hoursRemaining < 24) {
+    return `${hoursRemaining.toFixed(1)} hours`;
+  } else {
+    const days = Math.floor(hoursRemaining / 24);
+    const hours = Math.round(hoursRemaining % 24);
+    return `${days}d ${hours}h`;
+  }
+};
+
+// Calculate energy efficiency rating based on consumption patterns
+export const calculateEfficiencyRating = (actualConsumption, expectedConsumption, batteryEfficiency = 85) => {
+  const consumptionEfficiency = Math.max(0, 100 - ((actualConsumption - expectedConsumption) / expectedConsumption * 100));
+  const overallEfficiency = (consumptionEfficiency * 0.7) + (batteryEfficiency * 0.3);
+  
+  let rating;
+  if (overallEfficiency >= 90) rating = 'Excellent';
+  else if (overallEfficiency >= 80) rating = 'Good';
+  else if (overallEfficiency >= 70) rating = 'Fair';
+  else if (overallEfficiency >= 60) rating = 'Poor';
+  else rating = 'Critical';
+  
+  return {
+    percentage: Math.round(overallEfficiency),
+    rating,
+    color: overallEfficiency >= 80 ? 'green' : overallEfficiency >= 60 ? 'yellow' : 'red'
+  };
+};

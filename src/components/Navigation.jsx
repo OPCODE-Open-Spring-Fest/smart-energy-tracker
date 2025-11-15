@@ -2,12 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../context/AppContext';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+
 
 const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(typeof window !== 'undefined' ? window.innerWidth >= 1024 : false);
   const location = useLocation();
   const { state } = useApp();
+  const { logoutUser } = useAuth();
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     const handleResize = () => {
@@ -125,6 +131,28 @@ const Navigation = () => {
               {/* System Info */}
               <div className="mt-8 p-4 bg-gray-50 rounded-lg">
                 <h3 className="font-semibold text-gray-800 mb-3">System Info</h3>
+                
+                {/* Logout Button */}
+                  <div className="p-4 mt-6 border-t border-gray-200">
+                    <button
+                      onClick={async () => {
+                        try {
+                          await fetch("http://localhost:3000/api/logout", {
+                            method: "POST",
+                            credentials: "include",
+                          });
+                        } catch (err) {
+                          console.error("Logout failed:", err);
+                        }
+                        logoutUser();
+                        localStorage.removeItem("user");
+                        navigate("/");
+                      }}
+                      className="w-full flex items-center justify-center px-4 py-3 rounded-lg bg-red-500 text-white font-semibold shadow-md hover:bg-red-600 transition-all duration-300"
+                    >
+                      🚪 Logout
+                    </button>
+                  </div>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Battery</span>

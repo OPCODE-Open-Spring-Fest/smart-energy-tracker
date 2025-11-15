@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 import { useApp } from './AppContext';
 import { useNotification } from './NotificationContext';
+import { useAuth } from './AuthContext';
 
 const SocketContext = createContext();
 
@@ -10,8 +11,20 @@ export function SocketProvider({ children }) {
   const [isConnected, setIsConnected] = useState(false);
   const { dispatch } = useApp();
   const { addNotification } = useNotification();
+  const { user } = useAuth();
+  const isAuthenticated = !!user;
 
   useEffect(() => {
+    console.log(user)
+    if (!isAuthenticated) {
+      if (socket) {
+        socket.disconnect();
+        setSocket(null);
+        setIsConnected(false);
+      }
+      return;
+    }
+
     // Connect to mock server - in production, replace with actual server URL
     const newSocket = io('http://localhost:3001', {
       transports: ['websocket'],
@@ -194,7 +207,7 @@ export function SocketProvider({ children }) {
     setSocket(newSocket);
 
     return () => newSocket.close();
-  }, [dispatch]);
+  }, [dispatch,user]);
 
   const value = {
     socket,

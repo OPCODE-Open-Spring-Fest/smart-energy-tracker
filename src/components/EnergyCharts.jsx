@@ -1,6 +1,19 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import {
+  LineChart,
+  Line,
+  AreaChart,
+  Area,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from 'recharts';
 import { useApp } from '../context/AppContext';
 
 const EnergyCharts = () => {
@@ -56,7 +69,8 @@ const EnergyCharts = () => {
         transition={{ delay: 0.1 }}
         className="chart-container p-4 sm:p-6"
       >
-        <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-4">Real-time Energy Overview</h3>
+        <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-4">Real-time Energy Chart</h3>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-4 sm:mb-6">
           <motion.div
             whileHover={{ scale: 1.02 }}
@@ -73,6 +87,7 @@ const EnergyCharts = () => {
               {state.energyConsumption} W
             </motion.p>
           </motion.div>
+
           <motion.div
             whileHover={{ scale: 1.02 }}
             className="bg-green-50 p-3 sm:p-4 rounded-lg border border-green-100"
@@ -88,6 +103,7 @@ const EnergyCharts = () => {
               {state.batteryLevel}%
             </motion.p>
           </motion.div>
+
           <motion.div
             whileHover={{ scale: 1.02 }}
             className="bg-orange-50 p-3 sm:p-4 rounded-lg border border-orange-100 sm:col-span-2 lg:col-span-1"
@@ -104,6 +120,7 @@ const EnergyCharts = () => {
             </motion.p>
           </motion.div>
         </div>
+
         <ResponsiveContainer width="100%" height={250}>
           <AreaChart data={energyData}>
             <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
@@ -111,8 +128,22 @@ const EnergyCharts = () => {
             <YAxis stroke="#666" fontSize={12} />
             <Tooltip content={<CustomTooltip />} />
             <Legend />
-            <Area type="monotone" dataKey="consumption" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.3} name="Consumption (W)" />
-            <Area type="monotone" dataKey="battery" stroke="#10b981" fill="#10b981" fillOpacity={0.3} name="Battery (%)" />
+            <Area
+              type="monotone"
+              dataKey="consumption"
+              stroke="#3b82f6"
+              fill="#3b82f6"
+              fillOpacity={0.3}
+              name="Consumption (W)"
+            />
+            <Area
+              type="monotone"
+              dataKey="battery"
+              stroke="#10b981"
+              fill="#10b981"
+              fillOpacity={0.3}
+              name="Battery (%)"
+            />
           </AreaChart>
         </ResponsiveContainer>
       </motion.div>
@@ -153,7 +184,14 @@ const EnergyCharts = () => {
             <YAxis stroke="#666" fontSize={12} domain={[0, 100]} />
             <Tooltip content={<CustomTooltip />} />
             <Legend />
-            <Line type="monotone" dataKey="battery" stroke="#10b981" strokeWidth={3} dot={{ fill: '#10b981' }} name="Battery Level (%)" />
+            <Line
+              type="monotone"
+              dataKey="battery"
+              stroke="#10b981"
+              strokeWidth={3}
+              dot={{ fill: '#10b981' }}
+              name="Battery Level (%)"
+            />
           </LineChart>
         </ResponsiveContainer>
       </motion.div>
