@@ -9,7 +9,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { state } = useApp();
-  const { loginUser } = useAuth(); // 👈 get loginUser from context
+  const { loginUser } = useAuth();
 
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
@@ -22,19 +22,18 @@ const Login = () => {
       const response = await fetch("http://localhost:3001/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include", // ✅ send/receive cookies
+        credentials: "include",
         body: JSON.stringify(credentials),
       });
-      console.log("click1")
+
       const data = await response.json();
-      console.log("click1")
+
       if (response.ok) {
-        // ✅ Save user data to AuthContext and localStorage
+
         loginUser(data.user || { email: credentials.email });
 
         toast.success("Login successful! 🔋", { autoClose: 2000 });
-        console.log("click1")
-        // ✅ Redirect to dashboard
+
         setTimeout(() => navigate("/dashboard"), 1000);
       } else {
         toast.error(data.message || "Invalid email or password.");

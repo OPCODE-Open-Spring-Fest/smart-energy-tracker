@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+
+  backend:
+    build: .
+    container_name: smart-energy-backend
+    command: npm start
+    ports:
+      - "3001:3001"
+    environment:
+      MONGO_URI: "mongodb+srv://mukeshdhadhariya1_db_user:sKk4J4Rsmt1MzOEL@cluster0.fc8cebb.mongodb.net/"
+      JWT_SECRET: "dsfgh"
+      NODE_ENV: "development"
+      PORT: "3001"
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+  frontend:
+    build: .
+    container_name: smart-energy-frontend
+    command: npm run dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    depends_on:
+      - backend

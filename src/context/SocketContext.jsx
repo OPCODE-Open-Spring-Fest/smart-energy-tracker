@@ -15,7 +15,7 @@ export function SocketProvider({ children }) {
   const isAuthenticated = !!user;
 
   useEffect(() => {
-
+    console.log(user)
     if (!isAuthenticated) {
       if (socket) {
         socket.disconnect();
@@ -130,7 +130,7 @@ export function SocketProvider({ children }) {
     setSocket(newSocket);
 
     return () => newSocket.close();
-  }, [dispatch]);
+  }, [dispatch,user]);
 
   const value = {
     socket,

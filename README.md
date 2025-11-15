@@ -233,7 +233,21 @@ Quality checks
 - Quick Setup & Run (point-wise commands)
 
 
+## Environment Setup (.env configuration)
 
+Before running the project, create an environment file.
 
+1. Create a `.env` file in the root directory.
+2. Copy the content from `.env.example` and paste it into the `.env` file.
 
+```bash
+cp .env.example .env
+```
+
+## Demo Login Credentials
+
+Use the following demo account to log in:
+
+- **Email:** `a@gmail.com`
+- **Password:** `123`
 
